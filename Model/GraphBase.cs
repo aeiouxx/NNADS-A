@@ -3,6 +3,8 @@
 namespace RailSim.Model
 {
     public class Graph<TVertex, TEdge>
+        where TVertex : notnull
+        where TEdge : notnull
     {
         #region Nested classes
         protected class Vertex
@@ -12,115 +14,109 @@ namespace RailSim.Model
         }
         protected class Edge
         {
-            public Vertex From
-            { get; set; }
             public Vertex To
             { get; set; }
             public TEdge Data
             { get; set; }
 
-            public Edge(Graph<TVertex, TEdge>.Vertex from, Graph<TVertex, TEdge>.Vertex to, TEdge data)
+            public Edge(Graph<TVertex, TEdge>.Vertex to, TEdge data)
             {
-                From = from;
                 To = to;
                 Data = data;
             }
         }
         #endregion
-        private IEqualityComparer<TVertex> _vertexComparer;
-        private IEqualityComparer<TEdge> _edgeComparer;
-
-        // TODO: Need to rework this to use an adjacency list, this is terribly inefficient!!!
-        private List<Vertex> _vertices = new();
-        private List<Edge> _edges = new();
-        public Graph() : this(null, null)
+        #region Fields
+        private readonly IEqualityComparer<TVertex> _vertexComparer;
+        private Dictionary<Vertex, List<Edge>> _adjacencyList = new();
+        private Dictionary<TVertex, Vertex> _verticesLookup = new();
+        #endregion
+        /// <summary>
+        /// Creates a new instance of <see cref="Graph{TVertex, TEdge}"/>
+        /// </summary>
+        /// <param name="customVertexComparer">Will use <see cref="EqualityComparer{TVertex}.Default"/> if <see langword="null"/></param>
+        public Graph(IEqualityComparer<TVertex>? customVertexComparer = null)
         {
-        }
-        public Graph(IEqualityComparer<TVertex>? vertexComparer, IEqualityComparer<TEdge>? edgeComparer)
-        {
-            _vertexComparer = vertexComparer ?? EqualityComparer<TVertex>.Default;
-            _edgeComparer = edgeComparer ?? EqualityComparer<TEdge>.Default;
+            _vertexComparer = customVertexComparer ?? EqualityComparer<TVertex>.Default;
         }
 
         #region Manipulation
-        public bool AddVertex(TVertex vertex)
+        public bool AddVertex(TVertex data)
         {
-            if (ContainsVertex(vertex))
+            if (_verticesLookup.ContainsKey(data))
             {
                 return false;
             }
-            _vertices.Add(new Vertex { Data = vertex });
+            var vertex = new Vertex { Data = data };
+            _verticesLookup[data] = vertex;
+            _adjacencyList[vertex] = new List<Edge>();
             return true;
         }
-
-        private bool ContainsVertex(TVertex? vertex)
-        {
-            return _vertices.Any(v => _vertexComparer.Equals(v.Data, vertex));
-        }
-
         public bool RemoveVertex(TVertex vertex)
         {
-            var vertexToRemove = _vertices.FirstOrDefault(v => _vertexComparer.Equals(v.Data, vertex));
-            if (vertexToRemove is null)
+            if (!_verticesLookup.TryGetValue(vertex, out var vertexToRemove))
             {
                 return false;
             }
-            _vertices.Remove(vertexToRemove);
-            _edges.Where(edge =>
-                    _vertexComparer.Equals(edge.From.Data, vertex) ||
-                    _vertexComparer.Equals(edge.To.Data, vertex))
-                .ToList()
-                .ForEach(e => _edges.Remove(e));
+            _adjacencyList.Remove(vertexToRemove);
+            _verticesLookup.Remove(vertex);
+            foreach (var edges in _adjacencyList.Values)
+            {
+                edges.RemoveAll(e => _vertexComparer.Equals(e.To.Data, vertex));
+            }
             return true;
         }
 
         public bool AddEdge(TVertex from, TVertex to, TEdge data)
         {
-            var fromVertex = _vertices.FirstOrDefault(v => _vertexComparer.Equals(v.Data, from));
-            var toVertex = _vertices.FirstOrDefault(v => _vertexComparer.Equals(v.Data, to));
-            if (fromVertex == null || toVertex == null)
+            if (!_verticesLookup.TryGetValue(from, out var fromVertex) || !_verticesLookup.TryGetValue(to, out var toVertex))
             {
                 return false;
             }
-            _edges.Add(new Edge(fromVertex, toVertex, data));
+            _adjacencyList[fromVertex].Add(new Edge(toVertex, data));
             return true;
         }
 
         public bool RemoveEdge(TVertex from, TVertex to, TEdge data)
         {
-            var edgeToRemove = _edges.Where(e => _vertexComparer.Equals(e.From.Data, from) && _vertexComparer.Equals(e.To.Data, to))
-                .FirstOrDefault(e => _edgeComparer.Equals(e.Data, data));
+            if (!_verticesLookup.TryGetValue(from, out var fromVertex))
+            {
+                return false;
+            }
+            var edges = _adjacencyList[fromVertex];
+            var edgeToRemove = edges.FirstOrDefault(e => _vertexComparer.Equals(e.To.Data, to) && e.Data.Equals(data));
             if (edgeToRemove == null)
             {
                 return false;
             }
-            _edges.Remove(edgeToRemove);
-            return true;
+            return edges.Remove(edgeToRemove);
         }
-        public bool RemoveEdges(TVertex from, TVertex to)
+        public int RemoveEdges(TVertex from, TVertex to)
         {
-            var edgesToRemove = _edges.Where(e => _vertexComparer.Equals(e.From.Data, from) && _vertexComparer.Equals(e.To.Data, to)).ToList();
-            if (edgesToRemove.Count == 0)
+            if (!_verticesLookup.TryGetValue(from, out var fromVertex))
             {
-                return false;
+                return 0;
             }
-            edgesToRemove.ForEach(e => _edges.Remove(e));
-            return true;
+            return _adjacencyList[fromVertex]?.RemoveAll(e => _vertexComparer.Equals(e.To.Data, to)) ?? 0;
         }
         #endregion
 
         public string GetFormattedGraph()
         {
             StringBuilder sb = new();
-            foreach (var vertex in _vertices)
+            foreach (var vertex in _adjacencyList.Keys)
             {
-                sb.AppendLine($"{vertex.Data}");
-                foreach (var edge in _edges.Where(e => e.From == vertex))
+                sb.Append(vertex.Data);
+                sb.Append(" -> ");
+                foreach (var edge in _adjacencyList[vertex])
                 {
-                    sb.AppendLine($"\t->{edge.To.Data}: {edge.Data}");
+                    sb.Append(edge.To.Data);
+                    sb.Append(" (");
+                    sb.Append(edge.Data);
+                    sb.Append(") ");
                 }
+                sb.AppendLine();
             }
-
             return sb.ToString();
         }
     }
