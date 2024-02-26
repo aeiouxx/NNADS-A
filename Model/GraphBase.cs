@@ -119,6 +119,52 @@ namespace RailSim.Model
             }
             return sb.ToString();
         }
+
+
+        #region Pathfinding
+
+        public List<List<TVertex>> FindAllPaths(TVertex from, TVertex to)
+        {
+            return FindAllPaths(new[] { from }, new[] { to });
+        }
+        public List<List<TVertex>> FindAllPaths(IEnumerable<TVertex> from, IEnumerable<TVertex> to)
+        {
+            var paths = new List<List<TVertex>>();
+            var endVertices = new HashSet<TVertex>(to, _vertexComparer);
+
+            foreach (var start in from)
+            {
+                if (_verticesLookup.TryGetValue(start, out var startVertex))
+                {
+                    FindAllPathsRecursive(startVertex, endVertices, paths, new List<TVertex>());
+                }
+            }
+            return paths;
+        }
+
+        private void FindAllPathsRecursive(Vertex current, HashSet<TVertex> to, List<List<TVertex>> paths, List<TVertex> currentPath)
+        {
+            currentPath.Add(current.Data);
+            if (to.Contains(current.Data))
+            {
+                paths.Add(new List<TVertex>(currentPath));
+            }
+
+
+            if (_adjacencyList.TryGetValue(current, out var edges))
+            {
+                foreach (var edge in edges)
+                {
+                    if (!currentPath.Contains(edge.To.Data))
+                    {
+                        FindAllPathsRecursive(edge.To, to, paths, currentPath);
+                    }
+                }
+            }
+            // backtracking
+            currentPath.RemoveAt(currentPath.Count - 1);
+        }
+        #endregion
     }
 
 }

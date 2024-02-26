@@ -15,13 +15,11 @@ namespace RailSim
 
             graph.AddEdge("A", "B", 1);
             graph.AddEdge("B", "C", 2);
-            graph.AddEdge("A", "B", 17);
             graph.AddEdge("C", "D", 3);
+            graph.AddEdge("B", "D", 44);
+            graph.AddEdge("A", "D", 5);
 
-            Console.WriteLine(graph.GetFormattedGraph());
-            graph.RemoveEdges("A", "B");
-            Console.WriteLine("Removed all edges from A");
-            Console.WriteLine(graph.GetFormattedGraph());
+            var paths = graph.FindAllPaths("A", "D");
         }
     }
 }
