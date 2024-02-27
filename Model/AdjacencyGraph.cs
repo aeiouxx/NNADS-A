@@ -1,0 +1,158 @@
+﻿namespace RailSim.Model
+{
+    public class AdjacencyGraph<TVertex, TEdge>
+        where TVertex : notnull
+        where TEdge : IEdge<TVertex>
+    {
+        private static Predicate<TEdge> True => _ => true;
+        private static Predicate<TEdge> False => _ => false;
+        #region Fields
+        private readonly IEqualityComparer<TVertex> _vertexComparer;
+        private Dictionary<TVertex, List<TEdge>> _adjacencyList = new();
+        #endregion
+        #region Properties
+        public IEnumerable<TVertex> Vertices => _adjacencyList.Keys;
+        public IEnumerable<TEdge> Edges => _adjacencyList.Values.SelectMany(edgeList => edgeList);
+        #endregion
+
+        /// <summary>
+        /// </summary>
+        /// <param name="customVertexComparer">Will use <see cref="EqualityComparer{TVertex}.Default"/> if <see langword="null"/></param>
+        public AdjacencyGraph(IEqualityComparer<TVertex>? customVertexComparer = null)
+        {
+            _vertexComparer = customVertexComparer ?? EqualityComparer<TVertex>.Default;
+            _adjacencyList = new(_vertexComparer);
+        }
+
+        /// <summary>
+        /// Adds a vertex to the graph if it doesn't already exist.
+        /// </summary>
+        public bool AddVertex(TVertex vertex)
+        {
+            if (!_adjacencyList.ContainsKey(vertex))
+            {
+                _adjacencyList.Add(vertex, new List<TEdge>());
+                return true;
+            }
+            return false;
+        }
+        public bool ContainsVertex(TVertex vertex)
+        {
+            return _adjacencyList.ContainsKey(vertex);
+        }
+
+        /// <summary>
+        /// Removes a vertex and all of it's incident edges from the graph.
+        /// </summary>
+        /// <param name="vertex"></param>
+        /// <returns>The removed vertex if it was found, otherwise <see langword="null"/></returns>
+        public bool RemoveVertex(TVertex vertex)
+        {
+            if (_adjacencyList.ContainsKey(vertex))
+            {
+                _adjacencyList.Remove(vertex);
+                foreach (var edgeList in _adjacencyList.Values)
+                {
+                    edgeList.RemoveAll(edge => _vertexComparer.Equals(edge.From, vertex) || _vertexComparer.Equals(edge.To, vertex));
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public bool AddEdge(TEdge edge)
+        {
+            if (_adjacencyList.ContainsKey(edge.From) && _adjacencyList.ContainsKey(edge.To))
+            {
+                _adjacencyList[edge.From].Add(edge);
+                return true;
+            }
+            return false;
+        }
+        public bool AddEdge(TVertex from, TVertex to, Func<TEdge> factory)
+        {
+            if (_adjacencyList.ContainsKey(from) && _adjacencyList.ContainsKey(to))
+            {
+                _adjacencyList[from].Add(factory());
+                return true;
+            }
+
+            return false;
+        }
+        public bool RemoveEdge(TEdge edge)
+        {
+            if (_adjacencyList.ContainsKey(edge.From) && _adjacencyList.ContainsKey(edge.To))
+            {
+                return _adjacencyList[edge.From].Remove(edge);
+            }
+            return false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="filter">If left to be null, matches any edge</param>
+        public bool RemoveEdge(TVertex from, TVertex to, Predicate<TEdge>? filter = null)
+        {
+            if (_adjacencyList.ContainsKey(from) && _adjacencyList.ContainsKey(to))
+            {
+                filter ??= True;
+                return _adjacencyList[from]
+                    .Where(edge => _vertexComparer.Equals(edge.From, from) && _vertexComparer.Equals(edge.To, to) && filter(edge))
+                    .Any(edge => _adjacencyList[from]
+                    .Remove(edge));
+            }
+
+            return false;
+        }
+        public IEnumerable<TEdge> GetIncidentEdges(TVertex vertex)
+        {
+            if (_adjacencyList.ContainsKey(vertex))
+            {
+                foreach (var edgeList in _adjacencyList.Values)
+                {
+                    foreach (var edge in edgeList)
+                    {
+                        if (_vertexComparer.Equals(edge.From, vertex) || _vertexComparer.Equals(edge.To, vertex))
+                        {
+                            yield return edge;
+                        }
+                    }
+                }
+            }
+
+            yield break;
+        }
+        public IEnumerable<TEdge> GetIncomingEdges(TVertex vertex)
+        {
+            if (!_adjacencyList.ContainsKey(vertex))
+            {
+                yield break;
+            }
+
+            // fixme: needlessly iterates over outgoing edges of target vertex
+            foreach (var edgeList in _adjacencyList.Values)
+            {
+                foreach (var edge in edgeList)
+                {
+                    if (_vertexComparer.Equals(edge.To, vertex))
+                    {
+                        yield return edge;
+                    }
+                }
+            }
+        }
+        public IEnumerable<TEdge> GetOutgoingEdges(TVertex vertex)
+        {
+            if (!_adjacencyList.ContainsKey(vertex))
+            {
+                yield break;
+            }
+            foreach (var edge in _adjacencyList[vertex])
+            {
+                yield return edge;
+            }
+        }
+    }
+}
