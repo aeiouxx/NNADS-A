@@ -2,7 +2,7 @@
 {
     public static class AdjacencyGraphExtensions
     {
-        public static List<List<List<TVertex>>> FindAllDisjointTuples<TVertex>(this AdjacencyGraph<TVertex, IEdge<TVertex>> graph,
+        public static List<List<List<TVertex>>> FindAllDisjointTuples<TVertex>(this Graph<TVertex, IEdge<TVertex>> graph,
             IEnumerable<TVertex> startingVertices,
             IEnumerable<TVertex> endVertices)
             where TVertex : notnull
@@ -66,7 +66,7 @@
                 }
             }
         }
-        public static IEnumerable<List<TVertex>> FindAllPathsIterative<TVertex, TEdge>(this AdjacencyGraph<TVertex, TEdge> graph,
+        public static IEnumerable<List<TVertex>> FindAllPathsIterative<TVertex, TEdge>(this Graph<TVertex, TEdge> graph,
             IEnumerable<TVertex> startingVertices,
             IEnumerable<TVertex> endVertices)
             where TVertex : notnull
@@ -108,7 +108,7 @@
             }
             return allPaths;
         }
-        public static IEnumerable<List<TVertex>> FindAllPathsRecursive<TVertex, TEdge>(this AdjacencyGraph<TVertex, TEdge> graph,
+        public static IEnumerable<List<TVertex>> FindAllPathsRecursive<TVertex, TEdge>(this Graph<TVertex, TEdge> graph,
             IEnumerable<TVertex> startingVertices,
             IEnumerable<TVertex> endVertices)
             where TVertex : notnull
@@ -124,7 +124,7 @@
             }
             return allPaths;
         }
-        private static void FindPathsInternal<TVertex, TEdge>(AdjacencyGraph<TVertex, TEdge> graph,
+        private static void FindPathsInternal<TVertex, TEdge>(Graph<TVertex, TEdge> graph,
             TVertex currentVertex,
             TVertex endVertex,
             List<TVertex> currentPath,

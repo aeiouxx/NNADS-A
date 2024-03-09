@@ -1,6 +1,6 @@
 ﻿namespace RailSim.Model
 {
-    public class AdjacencyGraph<TVertex, TEdge>
+    public class Graph<TVertex, TEdge>
         where TVertex : notnull
         where TEdge : IEdge<TVertex>
     {

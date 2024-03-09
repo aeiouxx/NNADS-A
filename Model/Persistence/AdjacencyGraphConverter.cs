@@ -3,13 +3,13 @@ using System.Text.Json.Serialization;
 
 namespace RailSim.Model.Persistence
 {
-    public class AdjacencyGraphConverter<TVertex, TEdge> : JsonConverter<AdjacencyGraph<TVertex, TEdge>>
+    public class AdjacencyGraphConverter<TVertex, TEdge> : JsonConverter<Graph<TVertex, TEdge>>
     where TVertex : notnull
     where TEdge : IEdge<TVertex>
     {
-        public override AdjacencyGraph<TVertex, TEdge>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override Graph<TVertex, TEdge>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var graph = new AdjacencyGraph<TVertex, TEdge>();
+            var graph = new Graph<TVertex, TEdge>();
 
             while (reader.Read())
             {
@@ -56,7 +56,7 @@ namespace RailSim.Model.Persistence
             return graph;
         }
 
-        public override void Write(Utf8JsonWriter writer, AdjacencyGraph<TVertex, TEdge> value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, Graph<TVertex, TEdge> value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
 

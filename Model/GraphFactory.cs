@@ -2,6 +2,6 @@
 {
     public static class GraphFactory
     {
-        public static AdjacencyGraph<T, IEdge<T>> Create<T>() where T : notnull => new();
+        public static Graph<T, IEdge<T>> Create<T>() where T : notnull => new();
     }
 }
