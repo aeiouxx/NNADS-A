@@ -71,25 +71,115 @@ namespace RailSim
             graph.AddEdge(new Edge<string>("v54", "v60"));
             graph.AddVertex("v69");
             graph.AddEdge(new Edge<string>("v54", "v69"));
+            graph.AddVertex("v73");
+            graph.AddEdge(new Edge<string>("v63", "v73"));
+            graph.AddEdge(new Edge<string>("v69", "v73"));
+            graph.AddVertex("v120");
+            graph.AddEdge(new Edge<string>("v120", "v69"));
+            graph.AddVertex("v122");
+            graph.AddVertex("v124");
+            graph.AddVertex("v64");
+            graph.AddEdge(new Edge<string>("v122", "v64"));
+            graph.AddEdge(new Edge<string>("v124", "v64"));
+            graph.AddVertex("v126");
+            graph.AddVertex("v128");
+            graph.AddVertex("v59");
+            graph.AddEdge(new Edge<string>("v126", "v59"));
+            graph.AddEdge(new Edge<string>("v128", "v59"));
+            graph.AddVertex("v130");
+            graph.AddVertex("v132");
+            graph.AddVertex("v140");
+            graph.AddVertex("v51");
+            graph.AddVertex("v52");
+            graph.AddVertex("v53");
+            graph.AddVertex("v55");
+            graph.AddVertex("v58");
+            graph.AddVertex("v134");
+            graph.AddVertex("v136");
+            graph.AddVertex("v138");
+            graph.AddEdge(new Edge<string>("v130", "v58"));
+            graph.AddEdge(new Edge<string>("v132", "v55"));
+            graph.AddEdge(new Edge<string>("v55", "v58"));
+            graph.AddEdge(new Edge<string>("v140", "v51"));
+            graph.AddEdge(new Edge<string>("v51", "v52"));
+            graph.AddEdge(new Edge<string>("v51", "v53"));
+            graph.AddEdge(new Edge<string>("v52", "v134"));
+            graph.AddEdge(new Edge<string>("v53", "v136"));
+            graph.AddEdge(new Edge<string>("v53", "v138"));
+            graph.AddVertex("v75");
+            graph.AddVertex("v82");
+            graph.AddVertex("v81");
+            graph.AddEdge(new Edge<string>("v64", "v82"));
+            graph.AddEdge(new Edge<string>("v59", "v75"));
+            graph.AddEdge(new Edge<string>("v58", "v81"));
+            graph.AddEdge(new Edge<string>("v75", "v82"));
+            graph.AddEdge(new Edge<string>("v75", "v81"));
+            graph.AddVertex("v80");
+            graph.AddVertex("v79");
+            graph.AddVertex("v84");
+            graph.AddVertex("v83");
+            graph.AddEdge(new Edge<string>("v78", "v80"));
+            graph.AddEdge(new Edge<string>("v77", "v79"));
+            graph.AddEdge(new Edge<string>("v73", "v84"));
+            graph.AddEdge(new Edge<string>("v82", "v84"));
+            graph.AddEdge(new Edge<string>("v81", "v83"));
+            graph.AddVertex("v85");
+            graph.AddVertex("v86");
+            graph.AddEdge(new Edge<string>("v80", "v85"));
+            graph.AddEdge(new Edge<string>("v79", "v85"));
+            graph.AddEdge(new Edge<string>("v84", "v86"));
+            graph.AddVertex("v87");
+            graph.AddVertex("v88");
+            graph.AddEdge(new Edge<string>("v85", "v87"));
+            graph.AddEdge(new Edge<string>("v86", "v88"));
+            graph.AddEdge(new Edge<string>("v83", "v88"));
+            graph.AddVertex("v93");
+            graph.AddVertex("v94");
+            graph.AddEdge(new Edge<string>("v80", "v94"));
+            graph.AddEdge(new Edge<string>("v83", "v93"));
 
-            var startingVertices = new[] { "v113", "v11" };
-            var endVertices = new[] { };
-            Console.WriteLine($"Searching paths from: {string.Join(" ", startingVertices)}");
-            Console.WriteLine($"To: {string.Join(" ", endVertices)}");
-            Console.WriteLine($"Found: ");
-            var paths = graph.FindAllPathsRecursive(startingVertices, endVertices);
-            foreach (var path in paths)
-            {
-                Console.WriteLine(string.Join(" -> ", path));
-            }
-            Console.WriteLine("---ITERATIVE FIND---");
-            var paths2 = graph.FindAllPathsIterative(startingVertices, endVertices);
-            foreach (var path in paths2)
-            {
-                Console.WriteLine(string.Join(" -> ", path));
-            }
-            Console.WriteLine("---DISJOINT TUPLES---");
-            var result = graph.FindAllDisjointTuples(startingVertices, endVertices);
+            graph.AddVertex("v95");
+            graph.AddVertex("v89");
+            graph.AddVertex("v90");
+            graph.AddVertex("v92");
+            graph.AddVertex("v91");
+            graph.AddEdge(new Edge<string>("v89", "v92"));
+            graph.AddEdge(new Edge<string>("v90", "v91"));
+            graph.AddEdge(new Edge<string>("v87", "v89"));
+            graph.AddEdge(new Edge<string>("v88", "v90"));
+            graph.AddEdge(new Edge<string>("v87", "v95"));
+            graph.AddEdge(new Edge<string>("v88", "v95"));
+            graph.AddEdge(new GauntletEdge<string>("v95", "v90", "v87"));
+            graph.AddEdge(new GauntletEdge<string>("v95", "v89", "v88"));
+            graph.AddVertex("v602");
+            graph.AddVertex("v601");
+            graph.AddVertex("v301");
+            graph.AddVertex("v302");
+            graph.AddEdge(new Edge<string>("v94", "v602"));
+            graph.AddEdge(new Edge<string>("v92", "v94"));
+            graph.AddEdge(new Edge<string>("v91", "v93"));
+            graph.AddEdge(new Edge<string>("v92", "v601"));
+            graph.AddEdge(new Edge<string>("v91", "v301"));
+            graph.AddEdge(new Edge<string>("v93", "v302"));
+
+            //var startingVertices = new[] { "v113", "v11" };
+            //var endVertices = new[] { };
+            //Console.WriteLine($"Searching paths from: {string.Join(" ", startingVertices)}");
+            //Console.WriteLine($"To: {string.Join(" ", endVertices)}");
+            //Console.WriteLine($"Found: ");
+            //var paths = graph.FindAllPathsRecursive(startingVertices, endVertices);
+            //foreach (var path in paths)
+            //{
+            //    Console.WriteLine(string.Join(" -> ", path));
+            //}
+            //Console.WriteLine("---ITERATIVE FIND---");
+            //var paths2 = graph.FindAllPathsIterative(startingVertices, endVertices);
+            //foreach (var path in paths2)
+            //{
+            //    Console.WriteLine(string.Join(" -> ", path));
+            //}
+            //Console.WriteLine("---DISJOINT TUPLES---");
+            //var result = graph.FindAllDisjointTuples(startingVertices, endVertices);
         }
     }
 }
