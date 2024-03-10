@@ -6,6 +6,11 @@ namespace RailSim
 
     internal class Program
     {
+        private static string DefaultOutputFile = "output.json";
+        private static string DefaultInputFile = "graph.json";
+
+        private static string DefaultOutputLocation = "output";
+        private static string DefaultInputLocation = "input";
         static void Main(string[] args)
         {
             var graph = GraphFactory.Create<string>();

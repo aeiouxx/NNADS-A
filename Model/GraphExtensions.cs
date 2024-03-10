@@ -76,7 +76,7 @@ namespace RailSim.Model
                 }
                 Console.WriteLine($"Tupling for {tupleSize}");
                 Console.WriteLine($"Adding: {newTuples.Count}");
-                tuples.AddRange(newTuples.Where(t => t != null));
+                tuples.AddRange(newTuples);
                 Console.WriteLine($"Total: {tuples.Count}");
             }
 
