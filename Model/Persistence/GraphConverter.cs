@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace RailSim.Model.Persistence
 {
-    public class AdjacencyGraphConverter<TVertex, TEdge> : JsonConverter<Graph<TVertex, TEdge>>
+    public class GraphConverter<TVertex, TEdge> : JsonConverter<Graph<TVertex, TEdge>>
     where TVertex : notnull
     where TEdge : IEdge<TVertex>
     {

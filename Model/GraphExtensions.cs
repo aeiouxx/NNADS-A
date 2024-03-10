@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 
 namespace RailSim.Model
 {
-    public static class AdjacencyGraphExtensions
+    public static class GraphExtensions
     {
         // Wrapper class for BitArray to allow for 2D indexing while still allocating contiguous memory and 1 bit per entry (boolean takes up 1 byte).
         private class BitMatrix
@@ -22,18 +22,18 @@ namespace RailSim.Model
             }
         }
         public static List<List<Path<TVertex>>> FindAllDisjointTuples<TVertex>(this Graph<TVertex, IEdge<TVertex>> graph,
+            List<Path<TVertex>> paths,
             IEnumerable<TVertex> startingVertices,
             IEnumerable<TVertex> endVertices)
             where TVertex : notnull
         {
-            var paths = FindAllPathsIterative(graph, startingVertices, endVertices).ToList();
             int maxTupleSize = Math.Min(startingVertices.Count(), endVertices.Count());
             // We can use a matrix to store the collision information between paths.
             // This avoids having to check multiple times whether a pair of paths is disjoint.
             var collisions = PrepareCollisionMatrix(paths, paths.Count);
             // Because we initialize our tuples in a strictly increasing order, we can avoid permutations and 
             // only look forward to avoid duplicates. This reduces the search space quite significantly.
-            // ( i.e. if we have (0, 1) we don't have to worry about (1, 0) and can start searching from index of 2)
+            // ( i.e. if we have {0, 1} we don't have to worry about {1, 0} and can start searching from index of 2)
             // same applies for 3-tuples, etc.
             List<List<int>> tuples = new();
             for (int i = 0; i < paths.Count; i++)
@@ -46,6 +46,7 @@ namespace RailSim.Model
                     }
                 }
             }
+            Console.WriteLine($"Adding {tuples.Count} 2-tuples.");
             for (int tupleSize = 3; tupleSize <= maxTupleSize; tupleSize++)
             {
                 ConcurrentBag<List<int>> newTuples = new();
@@ -74,12 +75,11 @@ namespace RailSim.Model
                 {
                     break;
                 }
-                Console.WriteLine($"Tupling for {tupleSize}");
-                Console.WriteLine($"Adding: {newTuples.Count}");
+                Console.WriteLine($"Adding {newTuples.Count} {tupleSize}-tuples");
                 tuples.AddRange(newTuples);
-                Console.WriteLine($"Total: {tuples.Count}");
             }
 
+            Console.WriteLine($"Total: {tuples.Count}");
             return tuples.Select(tuple => tuple.Select(index => paths[index]).ToList()).ToList();
         }
 
