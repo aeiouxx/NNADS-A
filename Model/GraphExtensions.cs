@@ -11,8 +11,13 @@ namespace RailSim.Model
         {
             var paths = FindAllPathsIterative(graph, startingVertices, endVertices).ToList();
             int maxTupleSize = Math.Min(startingVertices.Count(), endVertices.Count());
+            // We can use a matrix to store the collision information between paths.
+            // This avoids having to check multiple times whether a pair of paths is disjoint.
             bool[,] collisions = PrepareCollisionMatrix(paths);
-
+            // Because we initialize our tuples in a strictly increasing order, we can avoid permutations and 
+            // only look forward to avoid duplicates. This reduces the search space quite significantly.
+            // ( i.e. if we have (0, 1) we don't have to worry about (1, 0) and can start searching from index of 2)
+            // same applies for 3-tuples, etc.
             List<List<int>> tuples = new();
             for (int i = 0; i < paths.Count; i++)
             {
@@ -24,14 +29,16 @@ namespace RailSim.Model
                     }
                 }
             }
-
             for (int tupleSize = 3; tupleSize <= maxTupleSize; tupleSize++)
             {
                 ConcurrentBag<List<int>> newTuples = new();
                 var toExpand = tuples.Where(t => t?.Count == tupleSize - 1).ToList();
                 Parallel.ForEach(toExpand, tuple =>
                 {
-                    var lastInTuple = tuple.Last(); // Ensures we only look forward to avoid permutations
+                    // Because our tuples store indices in a strictly increasing order, we can
+                    // resume the search from the last index in the tuple. While guaranteeing 
+                    // that we don't create any duplicates nor combinations
+                    var lastInTuple = tuple.Last();
                     var candidateIndices = paths.Select((path, index) => index)
                                                 .Where(index => index > lastInTuple && !tuple.Contains(index))
                                                 .ToList();
@@ -45,7 +52,7 @@ namespace RailSim.Model
                         }
                     }
                 });
-                // If we cant create any n-tuples, we obviously wont be able to create any n+1-tuples.
+                // If we can't create any n-tuples, we obviously wont be able to create any (n+1)-tuples.
                 if (newTuples.Count == 0)
                 {
                     break;
@@ -56,7 +63,6 @@ namespace RailSim.Model
                 Console.WriteLine($"Total: {tuples.Count}");
             }
 
-            var nulls = tuples.Where(t => t == null).ToList();
             return tuples.Select(tuple => tuple.Select(index => paths[index]).ToList()).ToList();
         }
 
