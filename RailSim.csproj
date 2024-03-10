@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if not exist &quot;$(TargetDir)input\&quot; mkdir &quot;$(TargetDir)input\&quot;&#xD;&#xA;if not exist &quot;$(TargetDir)input\graph.json&quot; xcopy /Y &quot;$(ProjectDir)res\input\graph.json&quot; &quot;$(TargetDir)input\&quot;&#xD;&#xA;if not exist &quot;$(TargetDir)input\search.json&quot; xcopy /Y &quot;$(ProjectDir)res\input\search.json&quot; &quot;$(TargetDir)input\&quot;" />
+  </Target>
+
 </Project>

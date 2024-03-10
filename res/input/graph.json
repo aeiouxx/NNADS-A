@@ -1,0 +1,490 @@
+{
+  "Vertices": [
+    "v113",
+    "v111",
+    "v61",
+    "v109",
+    "v107",
+    "v62",
+    "v68",
+    "v103",
+    "v65",
+    "v101",
+    "v57",
+    "v71",
+    "v102",
+    "v56",
+    "v66",
+    "v67",
+    "v104",
+    "v72",
+    "v76",
+    "v78",
+    "v77",
+    "v106",
+    "v70",
+    "v108",
+    "v74",
+    "v112",
+    "v60",
+    "v63",
+    "v114",
+    "v54",
+    "v69",
+    "v73",
+    "v120",
+    "v122",
+    "v124",
+    "v64",
+    "v126",
+    "v128",
+    "v59",
+    "v130",
+    "v132",
+    "v140",
+    "v51",
+    "v52",
+    "v53",
+    "v55",
+    "v58",
+    "v134",
+    "v136",
+    "v138",
+    "v75",
+    "v82",
+    "v81",
+    "v80",
+    "v79",
+    "v84",
+    "v83",
+    "v85",
+    "v86",
+    "v87",
+    "v88",
+    "v93",
+    "v94",
+    "v95",
+    "v89",
+    "v90",
+    "v92",
+    "v91",
+    "v602",
+    "v601",
+    "v301",
+    "v302"
+  ],
+  "Edges": [
+    {
+      "Type": "Edge",
+      "From": "v113",
+      "To": "v61"
+    },
+    {
+      "Type": "Edge",
+      "From": "v111",
+      "To": "v61"
+    },
+    {
+      "Type": "Edge",
+      "From": "v61",
+      "To": "v68"
+    },
+    {
+      "Type": "Edge",
+      "From": "v109",
+      "To": "v62"
+    },
+    {
+      "Type": "Edge",
+      "From": "v107",
+      "To": "v62"
+    },
+    {
+      "Type": "Edge",
+      "From": "v62",
+      "To": "v68"
+    },
+    {
+      "Type": "Edge",
+      "From": "v68",
+      "To": "v71"
+    },
+    {
+      "Type": "Edge",
+      "From": "v103",
+      "To": "v65"
+    },
+    {
+      "Type": "Edge",
+      "From": "v65",
+      "To": "v71"
+    },
+    {
+      "Type": "Edge",
+      "From": "v101",
+      "To": "v57"
+    },
+    {
+      "Type": "Edge",
+      "From": "v57",
+      "To": "v65"
+    },
+    {
+      "Type": "Edge",
+      "From": "v57",
+      "To": "v66"
+    },
+    {
+      "Type": "Edge",
+      "From": "v71",
+      "To": "v78"
+    },
+    {
+      "Type": "Edge",
+      "From": "v102",
+      "To": "v56"
+    },
+    {
+      "Type": "Edge",
+      "From": "v56",
+      "To": "v66"
+    },
+    {
+      "Type": "Edge",
+      "From": "v56",
+      "To": "v67"
+    },
+    {
+      "Type": "Edge",
+      "From": "v66",
+      "To": "v72"
+    },
+    {
+      "Type": "Edge",
+      "From": "v67",
+      "To": "v76"
+    },
+    {
+      "Type": "Edge",
+      "From": "v104",
+      "To": "v67"
+    },
+    {
+      "Type": "Edge",
+      "From": "v72",
+      "To": "v78"
+    },
+    {
+      "Type": "Edge",
+      "From": "v72",
+      "To": "v77"
+    },
+    {
+      "Type": "Edge",
+      "From": "v76",
+      "To": "v77"
+    },
+    {
+      "Type": "Edge",
+      "From": "v78",
+      "To": "v80"
+    },
+    {
+      "Type": "Edge",
+      "From": "v77",
+      "To": "v79"
+    },
+    {
+      "Type": "Edge",
+      "From": "v106",
+      "To": "v70"
+    },
+    {
+      "Type": "Edge",
+      "From": "v70",
+      "To": "v74"
+    },
+    {
+      "Type": "Edge",
+      "From": "v108",
+      "To": "v70"
+    },
+    {
+      "Type": "Edge",
+      "From": "v74",
+      "To": "v76"
+    },
+    {
+      "Type": "Edge",
+      "From": "v112",
+      "To": "v60"
+    },
+    {
+      "Type": "Edge",
+      "From": "v60",
+      "To": "v63"
+    },
+    {
+      "Type": "Edge",
+      "From": "v63",
+      "To": "v74"
+    },
+    {
+      "Type": "Edge",
+      "From": "v63",
+      "To": "v73"
+    },
+    {
+      "Type": "Edge",
+      "From": "v114",
+      "To": "v54"
+    },
+    {
+      "Type": "Edge",
+      "From": "v54",
+      "To": "v60"
+    },
+    {
+      "Type": "Edge",
+      "From": "v54",
+      "To": "v69"
+    },
+    {
+      "Type": "Edge",
+      "From": "v69",
+      "To": "v73"
+    },
+    {
+      "Type": "Edge",
+      "From": "v73",
+      "To": "v84"
+    },
+    {
+      "Type": "Edge",
+      "From": "v120",
+      "To": "v69"
+    },
+    {
+      "Type": "Edge",
+      "From": "v122",
+      "To": "v64"
+    },
+    {
+      "Type": "Edge",
+      "From": "v124",
+      "To": "v64"
+    },
+    {
+      "Type": "Edge",
+      "From": "v64",
+      "To": "v82"
+    },
+    {
+      "Type": "Edge",
+      "From": "v126",
+      "To": "v59"
+    },
+    {
+      "Type": "Edge",
+      "From": "v128",
+      "To": "v59"
+    },
+    {
+      "Type": "Edge",
+      "From": "v59",
+      "To": "v75"
+    },
+    {
+      "Type": "Edge",
+      "From": "v130",
+      "To": "v58"
+    },
+    {
+      "Type": "Edge",
+      "From": "v132",
+      "To": "v55"
+    },
+    {
+      "Type": "Edge",
+      "From": "v140",
+      "To": "v51"
+    },
+    {
+      "Type": "Edge",
+      "From": "v51",
+      "To": "v52"
+    },
+    {
+      "Type": "Edge",
+      "From": "v51",
+      "To": "v53"
+    },
+    {
+      "Type": "Edge",
+      "From": "v52",
+      "To": "v134"
+    },
+    {
+      "Type": "Edge",
+      "From": "v52",
+      "To": "v55"
+    },
+    {
+      "Type": "Edge",
+      "From": "v53",
+      "To": "v136"
+    },
+    {
+      "Type": "Edge",
+      "From": "v53",
+      "To": "v138"
+    },
+    {
+      "Type": "Edge",
+      "From": "v55",
+      "To": "v58"
+    },
+    {
+      "Type": "Edge",
+      "From": "v58",
+      "To": "v81"
+    },
+    {
+      "Type": "Edge",
+      "From": "v75",
+      "To": "v82"
+    },
+    {
+      "Type": "Edge",
+      "From": "v75",
+      "To": "v81"
+    },
+    {
+      "Type": "Edge",
+      "From": "v82",
+      "To": "v84"
+    },
+    {
+      "Type": "Edge",
+      "From": "v81",
+      "To": "v83"
+    },
+    {
+      "Type": "Edge",
+      "From": "v80",
+      "To": "v85"
+    },
+    {
+      "Type": "Edge",
+      "From": "v80",
+      "To": "v94"
+    },
+    {
+      "Type": "Edge",
+      "From": "v79",
+      "To": "v85"
+    },
+    {
+      "Type": "Edge",
+      "From": "v79",
+      "To": "v86"
+    },
+    {
+      "Type": "Edge",
+      "From": "v84",
+      "To": "v86"
+    },
+    {
+      "Type": "Edge",
+      "From": "v83",
+      "To": "v88"
+    },
+    {
+      "Type": "Edge",
+      "From": "v83",
+      "To": "v93"
+    },
+    {
+      "Type": "Edge",
+      "From": "v85",
+      "To": "v87"
+    },
+    {
+      "Type": "Edge",
+      "From": "v86",
+      "To": "v88"
+    },
+    {
+      "Type": "Edge",
+      "From": "v87",
+      "To": "v89"
+    },
+    {
+      "Type": "Edge",
+      "From": "v87",
+      "To": "v95"
+    },
+    {
+      "Type": "Edge",
+      "From": "v88",
+      "To": "v90"
+    },
+    {
+      "Type": "Edge",
+      "From": "v88",
+      "To": "v95"
+    },
+    {
+      "Type": "Edge",
+      "From": "v93",
+      "To": "v302"
+    },
+    {
+      "Type": "Edge",
+      "From": "v94",
+      "To": "v602"
+    },
+    {
+      "Type": "GauntletEdge",
+      "From": "v95",
+      "To": "v90",
+      "TraversibleFor": "v87"
+    },
+    {
+      "Type": "GauntletEdge",
+      "From": "v95",
+      "To": "v89",
+      "TraversibleFor": "v88"
+    },
+    {
+      "Type": "Edge",
+      "From": "v89",
+      "To": "v92"
+    },
+    {
+      "Type": "Edge",
+      "From": "v90",
+      "To": "v91"
+    },
+    {
+      "Type": "Edge",
+      "From": "v92",
+      "To": "v94"
+    },
+    {
+      "Type": "Edge",
+      "From": "v92",
+      "To": "v601"
+    },
+    {
+      "Type": "Edge",
+      "From": "v91",
+      "To": "v93"
+    },
+    {
+      "Type": "Edge",
+      "From": "v91",
+      "To": "v301"
+    }
+  ]
+}
