@@ -8,7 +8,6 @@ namespace RailSim
     {
         static void Main(string[] args)
         {
-
             var graph = GraphFactory.Create<string>();
             // TODO: remove me, just to generate the json...
             graph.AddVertex("v113");

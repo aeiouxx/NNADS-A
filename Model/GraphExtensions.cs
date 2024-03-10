@@ -1,9 +1,26 @@
-﻿using System.Collections.Concurrent;
+﻿using System.Collections;
+using System.Collections.Concurrent;
 
 namespace RailSim.Model
 {
     public static class AdjacencyGraphExtensions
     {
+        // Wrapper class for BitArray to allow for 2D indexing while still allocating contiguous memory and 1 bit per entry (boolean takes up 1 byte).
+        private class BitMatrix
+        {
+            private readonly BitArray _bits;
+            private readonly int _width;
+            public BitMatrix(int width, int height)
+            {
+                _width = width;
+                _bits = new BitArray(width * height);
+            }
+            public bool this[int i, int j]
+            {
+                get => _bits[i * _width + j];
+                set => _bits[i * _width + j] = value;
+            }
+        }
         public static List<List<Path<TVertex>>> FindAllDisjointTuples<TVertex>(this Graph<TVertex, IEdge<TVertex>> graph,
             IEnumerable<TVertex> startingVertices,
             IEnumerable<TVertex> endVertices)
@@ -13,7 +30,7 @@ namespace RailSim.Model
             int maxTupleSize = Math.Min(startingVertices.Count(), endVertices.Count());
             // We can use a matrix to store the collision information between paths.
             // This avoids having to check multiple times whether a pair of paths is disjoint.
-            bool[,] collisions = PrepareCollisionMatrix(paths);
+            var collisions = PrepareCollisionMatrix(paths, paths.Count);
             // Because we initialize our tuples in a strictly increasing order, we can avoid permutations and 
             // only look forward to avoid duplicates. This reduces the search space quite significantly.
             // ( i.e. if we have (0, 1) we don't have to worry about (1, 0) and can start searching from index of 2)
@@ -66,10 +83,10 @@ namespace RailSim.Model
             return tuples.Select(tuple => tuple.Select(index => paths[index]).ToList()).ToList();
         }
 
-        private static bool[,] PrepareCollisionMatrix<TVertex>(List<Path<TVertex>> paths) where TVertex : notnull
+        private static BitMatrix PrepareCollisionMatrix<TVertex>(List<Path<TVertex>> paths, int count)
+            where TVertex : notnull
         {
-            int count = paths.Count;
-            var matrix = new bool[count, count];
+            var matrix = new BitMatrix(count, count);
             for (int i = 0; i < count; i++)
             {
                 for (int j = i + 1; j < count; j++)
