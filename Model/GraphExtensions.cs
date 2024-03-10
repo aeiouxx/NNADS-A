@@ -1,78 +1,88 @@
-﻿namespace RailSim.Model
+﻿using System.Collections.Concurrent;
+
+namespace RailSim.Model
 {
     public static class AdjacencyGraphExtensions
     {
-        public static List<List<List<TVertex>>> FindAllDisjointTuples<TVertex>(this Graph<TVertex, IEdge<TVertex>> graph,
+        public static List<List<Path<TVertex>>> FindAllDisjointTuples<TVertex>(this Graph<TVertex, IEdge<TVertex>> graph,
             IEnumerable<TVertex> startingVertices,
             IEnumerable<TVertex> endVertices)
             where TVertex : notnull
         {
-            var allPaths = FindAllPathsIterative(graph, startingVertices, endVertices);
-            var maxTupleSize = Math.Min(startingVertices.Count(), endVertices.Count());
-            var validTuples = new List<List<List<TVertex>>>();
-            for (int n = 2; n <= maxTupleSize; n++)
-            {
-                var combinations = GetCombinations(allPaths.ToList(), n, 0);
+            var paths = FindAllPathsIterative(graph, startingVertices, endVertices).ToList();
+            int maxTupleSize = Math.Min(startingVertices.Count(), endVertices.Count());
+            bool[,] collisions = PrepareCollisionMatrix(paths);
 
-                foreach (var combo in combinations)
+            List<List<int>> tuples = new();
+            for (int i = 0; i < paths.Count; i++)
+            {
+                for (int j = i + 1; j < paths.Count; j++)
                 {
-                    if (ArePathsDisjoint(combo))
+                    if (!collisions[i, j])
                     {
-                        validTuples.Add(combo);
+                        tuples.Add(new List<int> { i, j });
                     }
                 }
             }
-            return validTuples;
+
+            for (int tupleSize = 3; tupleSize <= maxTupleSize; tupleSize++)
+            {
+                ConcurrentBag<List<int>> newTuples = new();
+                var toExpand = tuples.Where(t => t?.Count == tupleSize - 1).ToList();
+                Parallel.ForEach(toExpand, tuple =>
+                {
+                    var lastInTuple = tuple.Last(); // Ensures we only look forward to avoid permutations
+                    var candidateIndices = paths.Select((path, index) => index)
+                                                .Where(index => index > lastInTuple && !tuple.Contains(index))
+                                                .ToList();
+                    foreach (var pathIndex in candidateIndices)
+                    {
+                        bool isDisjoint = tuple.All(index => !collisions[index, pathIndex]);
+                        if (isDisjoint)
+                        {
+                            var newTuple = new List<int>(tuple) { pathIndex };
+                            newTuples.Add(newTuple);
+                        }
+                    }
+                });
+                // If we cant create any n-tuples, we obviously wont be able to create any n+1-tuples.
+                if (newTuples.Count == 0)
+                {
+                    break;
+                }
+                Console.WriteLine($"Tupling for {tupleSize}");
+                Console.WriteLine($"Adding: {newTuples.Count}");
+                tuples.AddRange(newTuples.Where(t => t != null));
+                Console.WriteLine($"Total: {tuples.Count}");
+            }
+
+            var nulls = tuples.Where(t => t == null).ToList();
+            return tuples.Select(tuple => tuple.Select(index => paths[index]).ToList()).ToList();
         }
 
-        private static bool ArePathsDisjoint<TVertex>(List<List<TVertex>> combo) where TVertex : notnull
+        private static bool[,] PrepareCollisionMatrix<TVertex>(List<Path<TVertex>> paths) where TVertex : notnull
         {
-            HashSet<TVertex> vertices = new();
-
-            foreach (var path in combo)
+            int count = paths.Count;
+            var matrix = new bool[count, count];
+            for (int i = 0; i < count; i++)
             {
-                foreach (var vertex in path)
+                for (int j = i + 1; j < count; j++)
                 {
-                    if (vertices.Contains(vertex))
-                    {
-                        return false;
-                    }
-                    vertices.Add(vertex);
+                    matrix[i, j] = !paths[i].IsDisjoint(paths[j]);
+                    matrix[j, i] = matrix[i, j];
                 }
             }
-
-            return true;
+            return matrix;
         }
 
-        private static IEnumerable<List<List<TVertex>>> GetCombinations<TVertex>(List<List<TVertex>> paths, int length, int startIndex)
-            where TVertex : notnull
-        {
-            if (length == 1)
-            {
-                for (int i = startIndex; i < paths.Count; i++)
-                {
-                    yield return new List<List<TVertex>> { paths[i] };
-                }
-            }
-
-            else
-            {
-                for (int i = startIndex; i <= paths.Count - length; i++)
-                {
-                    foreach (var combo in GetCombinations(paths, length - 1, i + 1))
-                    {
-                        yield return new List<List<TVertex>> { paths[i] }.Concat(combo).ToList();
-                    }
-                }
-            }
-        }
-        public static IEnumerable<List<TVertex>> FindAllPathsIterative<TVertex, TEdge>(this Graph<TVertex, TEdge> graph,
+        public static IEnumerable<Path<TVertex>> FindAllPathsIterative<TVertex, TEdge>(this Graph<TVertex, TEdge> graph,
             IEnumerable<TVertex> startingVertices,
             IEnumerable<TVertex> endVertices)
             where TVertex : notnull
             where TEdge : IEdge<TVertex>
         {
-            List<List<TVertex>> allPaths = new();
+            int pathNumber = 1;
+            List<Path<TVertex>> allPaths = new();
             HashSet<TVertex> goalSet = new(endVertices);
             Stack<(List<TVertex> Path, Option<TVertex> precursor)> pathStack = new();
             foreach (var startingVertex in startingVertices)
@@ -87,7 +97,9 @@
                 if (goalSet.Contains(current)
                     && currentPath.Count > 1)
                 {
-                    allPaths.Add(new List<TVertex>(currentPath));
+                    allPaths.Add(
+                        new Path<TVertex>($"A{pathNumber++}",
+                            new List<TVertex>(currentPath)));
                 }
 
                 foreach (var edge in graph.GetOutgoingEdges(current))

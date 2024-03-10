@@ -1,4 +1,5 @@
 ﻿using RailSim.Model;
+using System.Diagnostics;
 
 namespace RailSim
 {
@@ -7,7 +8,9 @@ namespace RailSim
     {
         static void Main(string[] args)
         {
+
             var graph = GraphFactory.Create<string>();
+            // TODO: remove me, just to generate the json...
             graph.AddVertex("v113");
             graph.AddVertex("v111");
             graph.AddVertex("v61");
@@ -106,6 +109,7 @@ namespace RailSim
             graph.AddEdge(new Edge<string>("v52", "v134"));
             graph.AddEdge(new Edge<string>("v53", "v136"));
             graph.AddEdge(new Edge<string>("v53", "v138"));
+            graph.AddEdge(new Edge<string>("v52", "v55"));
             graph.AddVertex("v75");
             graph.AddVertex("v82");
             graph.AddVertex("v81");
@@ -127,6 +131,7 @@ namespace RailSim
             graph.AddVertex("v86");
             graph.AddEdge(new Edge<string>("v80", "v85"));
             graph.AddEdge(new Edge<string>("v79", "v85"));
+            graph.AddEdge(new Edge<string>("v79", "v86"));
             graph.AddEdge(new Edge<string>("v84", "v86"));
             graph.AddVertex("v87");
             graph.AddVertex("v88");
@@ -161,25 +166,58 @@ namespace RailSim
             graph.AddEdge(new Edge<string>("v92", "v601"));
             graph.AddEdge(new Edge<string>("v91", "v301"));
             graph.AddEdge(new Edge<string>("v93", "v302"));
-
-            //var startingVertices = new[] { "v113", "v11" };
-            //var endVertices = new[] { };
-            //Console.WriteLine($"Searching paths from: {string.Join(" ", startingVertices)}");
-            //Console.WriteLine($"To: {string.Join(" ", endVertices)}");
-            //Console.WriteLine($"Found: ");
-            //var paths = graph.FindAllPathsRecursive(startingVertices, endVertices);
-            //foreach (var path in paths)
+            var startingVertices = new[] {
+                "v113",
+                "v111",
+                "v109",
+                "v107",
+                "v103",
+                "v101",
+                "v102",
+                "v104",
+                "v106",
+                "v108",
+                "v112",
+                "v114",
+                "v120",
+                "v122",
+                "v124",
+                "v126",
+                "v128",
+                "v130",
+                "v132",
+                "v140",
+            };
+            var endVertices = new[] {
+                "v134",
+                "v136",
+                "v138",
+                "v602",
+                "v601",
+                "v301",
+                "v302",
+            };
+            Console.WriteLine($"Number of vertices: {graph.Vertices.Count()}");
+            Console.WriteLine($"Number of edges: {graph.Edges.Count()}");
+            Console.WriteLine($"Searching paths from: {string.Join(" ", startingVertices)}");
+            Console.WriteLine($"To: {string.Join(" ", endVertices)}");
+            Console.WriteLine($"Found: ");
+            Console.WriteLine("---ITERATIVE FIND---");
+            var paths2 = graph.FindAllPathsIterative(startingVertices, endVertices);
+            Console.WriteLine($"Size: {paths2.Count()}");
+            foreach (var path in paths2)
+            {
+                Console.WriteLine(path);
+            }
+            Console.WriteLine("---DISJOINT TUPLES---");
+            var st = Stopwatch.StartNew();
+            var result = graph.FindAllDisjointTuples(startingVertices, endVertices);
+            Console.WriteLine($"Time to find all tuples: {st.ElapsedMilliseconds} ms");
+            //foreach (var tuple in result)
             //{
-            //    Console.WriteLine(string.Join(" -> ", path));
+            //    Console.WriteLine($"{{ {String.Join(", ", tuple.Select(t => t.Identifier))} }}");
             //}
-            //Console.WriteLine("---ITERATIVE FIND---");
-            //var paths2 = graph.FindAllPathsIterative(startingVertices, endVertices);
-            //foreach (var path in paths2)
-            //{
-            //    Console.WriteLine(string.Join(" -> ", path));
-            //}
-            //Console.WriteLine("---DISJOINT TUPLES---");
-            //var result = graph.FindAllDisjointTuples(startingVertices, endVertices);
+            st.Stop();
         }
     }
 }
