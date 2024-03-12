@@ -8,7 +8,7 @@ namespace RailSim.Test
         [Fact]
         void _2x2()
         {
-            BitMatrix matrix = new(2);
+            CollisionMatrix matrix = new(2);
 
             Assert.True(matrix[0, 0]);
             Assert.True(matrix[1, 1]);
@@ -24,7 +24,7 @@ namespace RailSim.Test
         [Fact]
         void _3x3()
         {
-            BitMatrix matrix = new(3);
+            CollisionMatrix matrix = new(3);
 
             for (int i = 0; i < 3; i++)
             {
@@ -52,7 +52,7 @@ namespace RailSim.Test
         [Fact]
         public void _10x10()
         {
-            var matrix = new BitMatrix(10);
+            var matrix = new CollisionMatrix(10);
 
             matrix[9, 7] = true;
             Assert.True(matrix[7, 9]);

@@ -14,11 +14,11 @@ namespace RailSim.Model
         *  0 1 1 0    0 1 . .  (i, j) -> (i * (i - 1) / 2) + j 
         *  1 0 0 1    1 0 0 .  (2, 1) -> (2 * (2 - 1) / 2) + 1 = 2 => 101100[2] = 1
         */
-        public class BitMatrix
+        public class CollisionMatrix
         {
             private readonly BitArray _bits;
             private readonly int _dimension;
-            public BitMatrix(int dimension)
+            public CollisionMatrix(int dimension)
             {
                 if (dimension < 2)
                 {
@@ -92,10 +92,6 @@ namespace RailSim.Model
             {
                 for (int j = i + 1; j < paths.Count; j++)
                 {
-                    if (i == 0 && j == 163)
-                    {
-                        Debugger.Break();
-                    }
                     if (!collisions[i, j])
                     {
                         tuples.Add(new List<int> { i, j });
@@ -143,18 +139,14 @@ namespace RailSim.Model
             return tuples.Select(tuple => tuple.Select(index => paths[index]).ToList()).ToList();
         }
 
-        private static BitMatrix PrepareCollisionMatrix<TVertex>(List<Path<TVertex>> paths, int count)
+        private static CollisionMatrix PrepareCollisionMatrix<TVertex>(List<Path<TVertex>> paths, int count)
             where TVertex : notnull
         {
-            var matrix = new BitMatrix(count);
+            var matrix = new CollisionMatrix(count);
             for (int i = 0; i < count; i++)
             {
                 for (int j = i + 1; j < count; j++)
                 {
-                    if (i == 0 && j == 163)
-                    {
-                        Debugger.Break();
-                    }
                     matrix[i, j] = !paths[i].IsDisjoint(paths[j]);
                 }
             }
