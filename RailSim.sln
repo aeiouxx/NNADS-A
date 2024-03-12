@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RailSim", "RailSim.csproj", "{B74820E4-022E-43F7-B4C9-68D19E3B963C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RailSim", "src\RailSim\RailSim.csproj", "{8858F307-8A8C-493F-A68B-37C859C30682}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RailSim.Test", "test\RailSim.Test\RailSim.Test.csproj", "{40418389-A758-4060-A1D3-A3F84DEB569A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B74820E4-022E-43F7-B4C9-68D19E3B963C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B74820E4-022E-43F7-B4C9-68D19E3B963C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B74820E4-022E-43F7-B4C9-68D19E3B963C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B74820E4-022E-43F7-B4C9-68D19E3B963C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8858F307-8A8C-493F-A68B-37C859C30682}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8858F307-8A8C-493F-A68B-37C859C30682}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8858F307-8A8C-493F-A68B-37C859C30682}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8858F307-8A8C-493F-A68B-37C859C30682}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40418389-A758-4060-A1D3-A3F84DEB569A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40418389-A758-4060-A1D3-A3F84DEB569A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40418389-A758-4060-A1D3-A3F84DEB569A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40418389-A758-4060-A1D3-A3F84DEB569A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

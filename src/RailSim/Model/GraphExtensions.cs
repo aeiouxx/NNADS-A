@@ -1,24 +1,76 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace RailSim.Model
 {
     public static class GraphExtensions
     {
-        // Wrapper class for BitArray to allow for 2D indexing while still allocating contiguous memory and 1 bit per entry (boolean takes up 1 byte).
-        private class BitMatrix
+        /* Because the collision matrix is a symmetric matrix, we can use a single bit array to store the triangle of the matrix.
+        * The diagonal also doesn't need to be stored, as it will always be true (a path always collides with itself).
+        *  1 1 0 1    . . . .  for zero based indexing
+        *  1 1 1 0 -> 1 . . .  can just store as a bit array of 101100 
+        *  0 1 1 0    0 1 . .  (i, j) -> (i * (i - 1) / 2) + j 
+        *  1 0 0 1    1 0 0 .  (2, 1) -> (2 * (2 - 1) / 2) + 1 = 2 => 101100[2] = 1
+        */
+        public class BitMatrix
         {
             private readonly BitArray _bits;
-            private readonly int _width;
-            public BitMatrix(int width, int height)
+            private readonly int _dimension;
+            public BitMatrix(int dimension)
             {
-                _width = width;
-                _bits = new BitArray(width * height);
+                if (dimension < 2)
+                {
+                    throw new ArgumentException("Dimension must be at least 2");
+                }
+                _dimension = dimension;
+                int numberOfElements = dimension * (dimension - 1) / 2;
+                _bits = new BitArray(numberOfElements);
             }
             public bool this[int i, int j]
             {
-                get => _bits[i * _width + j];
-                set => _bits[i * _width + j] = value;
+                get
+                {
+#if DEBUG
+                    AssertValidIndex(i, j);
+#endif
+                    if (i == j)
+                    {
+                        return true;
+                    }
+                    if (i < j)
+                    {
+                        (i, j) = (j, i);
+                    }
+                    return _bits[GetIndex(i, j)];
+                }
+                set
+                {
+#if DEBUG
+                    AssertValidIndex(i, j);
+#endif
+                    if (i == j)
+                    {
+                        return; // can't set the diagonal, (not actually stored)
+                    }
+                    if (i < j)
+                    {
+                        (i, j) = (j, i);
+                    }
+                    _bits[GetIndex(i, j)] = value;
+                }
+            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private int GetIndex(int i, int j)
+            {
+                return (i * (i - 1) / 2) + j;
+            }
+
+            [Conditional("DEBUG")]
+            public void AssertValidIndex(int i, int j)
+            {
+                Debug.Assert(i >= 0 && i < _dimension && j >= 0 && j < _dimension);
             }
         }
         public static List<List<Path<TVertex>>> FindAllDisjointTuples<TVertex>(this Graph<TVertex, IEdge<TVertex>> graph,
@@ -40,6 +92,10 @@ namespace RailSim.Model
             {
                 for (int j = i + 1; j < paths.Count; j++)
                 {
+                    if (i == 0 && j == 163)
+                    {
+                        Debugger.Break();
+                    }
                     if (!collisions[i, j])
                     {
                         tuples.Add(new List<int> { i, j });
@@ -62,6 +118,10 @@ namespace RailSim.Model
                                                 .ToList();
                     foreach (var pathIndex in candidateIndices)
                     {
+                        if (pathIndex == 163)
+                        {
+                            Debugger.Break();
+                        }
                         bool isDisjoint = tuple.All(index => !collisions[index, pathIndex]);
                         if (isDisjoint)
                         {
@@ -86,13 +146,16 @@ namespace RailSim.Model
         private static BitMatrix PrepareCollisionMatrix<TVertex>(List<Path<TVertex>> paths, int count)
             where TVertex : notnull
         {
-            var matrix = new BitMatrix(count, count);
+            var matrix = new BitMatrix(count);
             for (int i = 0; i < count; i++)
             {
                 for (int j = i + 1; j < count; j++)
                 {
+                    if (i == 0 && j == 163)
+                    {
+                        Debugger.Break();
+                    }
                     matrix[i, j] = !paths[i].IsDisjoint(paths[j]);
-                    matrix[j, i] = matrix[i, j];
                 }
             }
             return matrix;
