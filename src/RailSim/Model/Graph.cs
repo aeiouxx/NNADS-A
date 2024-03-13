@@ -58,11 +58,11 @@
             }
             return false;
         }
-        public bool AddEdge(TVertex from, TVertex to, Func<TEdge> factory)
+        public bool AddEdge(TVertex from, TVertex to, Func<TVertex, TVertex, TEdge> factory)
         {
             if (_adjacencyList.ContainsKey(from) && _adjacencyList.ContainsKey(to))
             {
-                _adjacencyList[from].Add(factory());
+                _adjacencyList[from].Add(factory(from, to));
                 return true;
             }
 
