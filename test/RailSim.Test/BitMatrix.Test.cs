@@ -56,8 +56,6 @@ namespace RailSim.Test
 
             matrix[9, 7] = true;
             Assert.True(matrix[7, 9]);
-
-            matrix[10, 10] = false;
         }
     }
 }

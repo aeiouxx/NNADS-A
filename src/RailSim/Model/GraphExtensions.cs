@@ -50,9 +50,10 @@ namespace RailSim.Model
 #if DEBUG
                     AssertValidIndex(i, j);
 #endif
+                    // we don't actually store the diagonal as it's always true
                     if (i == j)
                     {
-                        return; // can't set the diagonal, (not actually stored)
+                        return;
                     }
                     if (i < j)
                     {
