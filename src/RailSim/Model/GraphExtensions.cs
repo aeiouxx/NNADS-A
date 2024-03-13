@@ -13,6 +13,7 @@ namespace RailSim.Model
         *  1 1 1 0 -> 1 . . .  can just store as a bit array of 101100 
         *  0 1 1 0    0 1 . .  (i, j) -> (i * (i - 1) / 2) + j 
         *  1 0 0 1    1 0 0 .  (2, 1) -> (2 * (2 - 1) / 2) + 1 = 2 => 101100[2] = 1
+        *  Requires allocating C(n, 2) bits, instead of n^2
         */
         public class CollisionMatrix
         {
