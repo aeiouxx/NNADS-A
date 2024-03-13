@@ -25,12 +25,6 @@ namespace RailSim.Test
         void _3x3()
         {
             CollisionMatrix matrix = new(3);
-
-            for (int i = 0; i < 3; i++)
-            {
-                Assert.True(matrix[i, i]);
-            }
-
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 3; j++)
@@ -39,6 +33,7 @@ namespace RailSim.Test
                     {
                         Assert.False(matrix[i, j]);
                     }
+                    else Assert.True(matrix[i, j]);
                 }
             }
 
