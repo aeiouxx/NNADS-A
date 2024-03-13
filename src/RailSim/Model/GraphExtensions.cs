@@ -116,10 +116,6 @@ namespace RailSim.Model
                                                 .ToList();
                     foreach (var pathIndex in candidateIndices)
                     {
-                        if (pathIndex == 163)
-                        {
-                            Debugger.Break();
-                        }
                         bool isDisjoint = tuple.All(index => !collisions[index, pathIndex]);
                         if (isDisjoint)
                         {
